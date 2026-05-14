@@ -1,0 +1,936 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8" />
+<link rel="icon" type="image/png" href="logo.jpg" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Sisters — Restaurant & Café</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Cormorant+Garamond:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  :root{
+    --accent:#c9a96e;
+    --accent-light:#d4b483;
+    --cream:#1a1612;
+    --warm:#141008;
+    --text:#f0ebe4;
+    --muted:#8a8078;
+    --border:#2c2620;
+    --bg:#0e0b08;
+    --card:#1a1612;
+  }
+  html{scroll-behavior:smooth;background:var(--bg);color:var(--text);}
+  body{font-family:'Inter',ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased;background:var(--bg);}
+  .font-display{font-family:'Playfair Display',ui-serif,Georgia,serif;}
+  .font-cormorant{font-family:'Cormorant Garamond',ui-serif,Georgia,serif;}
+  ::-webkit-scrollbar{width:8px;}
+  ::-webkit-scrollbar-track{background:var(--bg);}
+  ::-webkit-scrollbar-thumb{background:#3a3028;border-radius:8px;}
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1);}
+  .reveal.in{opacity:1;transform:none;}
+  section{scroll-margin-top:72px;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+  .hero-anim{animation:fadeIn .9s ease forwards;}
+  .hero-anim-2{animation:fadeIn 1.1s .2s ease both;}
+  .hero-anim-3{animation:fadeIn 1.1s .4s ease both;}
+  @keyframes cartBounce{0%,100%{transform:scale(1)}40%{transform:scale(1.3)}70%{transform:scale(.9)}}
+  .cart-bounce{animation:cartBounce .4s ease;}
+  @keyframes toastIn{from{opacity:0;transform:translateX(120%)}to{opacity:1;transform:translateX(0)}}
+  .toast-in{animation:toastIn .35s cubic-bezier(.2,.8,.2,1) forwards;}
+  input,select,textarea{font-family:inherit;}
+  input:focus,select:focus,textarea:focus{outline:none;}
+  .cart-sidebar{transition:transform .3s cubic-bezier(.2,.8,.2,1);}
+  .cart-backdrop{transition:opacity .3s ease;}
+  .menu-card:hover .menu-card-img{transform:scale(1.06);}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-presets="env,react">
+
+const { createClient } = supabase;
+const db = createClient(
+  'https://qzjotkbqbxhmrngqxhpo.supabase.co',
+  'sb_publishable_SjMLlBtIqu-ilkr75Uwcqg_dDKhcYAD'
+);
+
+const BRAND = {
+  name: 'Sisters',
+  tagline: 'Restaurant & Café',
+  phone: '+373 792 72 000',
+  emailReservations: 'sisters@gmail.com',
+  emailContact: 'sisters@gmail.com',
+  addressLine1: 'Mihai Eminescu 50',
+  addressLine2: 'MD-2012, Chișinău, Moldova',
+  year: 2026,
+  credit: 'Realizat de Dogaru Catalin · +373 60 171 888',
+};
+
+const PHOTOS = {
+  hero1: 'restaurant.jpg',
+  hero2: 'terrace.jpg',
+  hero3: 'restaurant_elegant.jpg',
+  g1: 'food.jpg',
+  g2: 'cocktail1.jpg',
+  g3: 'restaurant2.jpg',
+  g4: 'restaurant3.jpg',
+  g5: 'terrace.jpg',
+  g6: 'terrace2.jpg',
+  about: 'team.jpg',
+};
+
+const MENU = {
+  'Meniu special': [
+    { name: 'Pâine din hrișcă verde cu guacamole, feta și ou poșat', desc: '', price: 190, img: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Pâine din hrișcă verde cu pui, feta și guacamole', desc: '', price: 210, img: 'https://images.unsplash.com/photo-1484723091739-30990ff50914?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Pâine din hrișcă verde cu brânză de capră, căpșuni și miere de trufe', desc: '', price: 190, img: 'https://images.unsplash.com/photo-1484723091739-30990ff50914?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Blinele din zucchini cu parmezan, smântână și ou poșat', desc: '', price: 180, img: 'https://images.unsplash.com/photo-1528207776546-365bb710ee93?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Scrob cu brânză de oi și roșii', desc: '', price: 160, img: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Omletă cu legume și parmezan', desc: '', price: 130, img: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Asorti de legume cu brânză', desc: '', price: 300, img: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Ardei copți cu roșii și brânză', desc: '', price: 260, img: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Salată moldovenească cu brânză și smântână', desc: '', price: 180, img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Pateu din ficat de gâscă cu dulceață din țelină', desc: '', price: 180, img: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Icre de Nisetru (28 gr) cu clătite și smântână / toasturi cu unt', desc: '', price: 800, img: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Pâine cu brânză și verdeață', desc: '', price: 240, img: 'https://images.unsplash.com/photo-1484723091739-30990ff50914?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Pâine caldă cu carne de vițel, ulei picant', desc: '', price: 400, img: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Sarmale cu carne de vită', desc: '', price: 250, img: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Colțunași cu carne de vită și porc în bulion', desc: '', price: 240, img: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Cartofi copți cu bacon și brânză', desc: '', price: 180, img: 'https://images.unsplash.com/photo-1600803907087-f56d462fd26b?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Cartofi prăjiți cu șuncă și ou', desc: '', price: 180, img: 'https://images.unsplash.com/photo-1600803907087-f56d462fd26b?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Mămăligă cu brânză, mărar și smântână', desc: '', price: 100, img: 'https://images.unsplash.com/photo-1600803907087-f56d462fd26b?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Zeamă cu tăieței de casă', desc: '', price: 140, img: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Zeamă de pește din biban și somon', desc: '', price: 200, img: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Pește prăjit, mămăligă cu brânză, sos de smântână', desc: '', price: 420, img: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Tocană de pui, mămăligă cu brânză și sos de smântână', desc: '', price: 290, img: 'https://images.unsplash.com/photo-1598515213692-6c0d4e95d3e1?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Beef Stroganoff cu piureu de cartofi', desc: '', price: 390, img: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Carne de vită înăbușită cu legume', desc: '', price: 450, img: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Cușma lui Guguță', desc: '', price: 200, img: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=500&q=80&auto=format&fit=crop' },
+  ],
+  'Micul dejun': [
+    { name: 'Pâine din hrișcă verde cu guacamole, feta și ou poșat', desc: '', price: 190, img: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Pâine din hrișcă verde cu pui, feta și guacamole', desc: '', price: 210, img: 'https://images.unsplash.com/photo-1484723091739-30990ff50914?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Pâine din hrișcă verde cu brânză de capră, căpșuni și miere de trufe', desc: '', price: 190, img: 'https://images.unsplash.com/photo-1484723091739-30990ff50914?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Blinele din zucchini cu parmezan, smântână și ou poșat', desc: '', price: 180, img: 'https://images.unsplash.com/photo-1528207776546-365bb710ee93?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Croissant cu somon și avocado', desc: '', price: 260, img: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Croissant cu prosciutto și mozzarella', desc: '', price: 220, img: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Croissant cu cremă, zmeură și înghețată', desc: '', price: 200, img: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=500&q=80&auto=format&fit=crop' },
+    { name: 'French toast cu avocado și creveți', desc: '', price: 240, img: 'https://images.unsplash.com/photo-1484723091739-30990ff50914?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Chia pudding cu mango', desc: '', price: 160, img: 'https://images.unsplash.com/photo-1546548970-71785318a17b?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Păpănași cu smântână, dulceață și fructe de pădure', desc: '', price: 170, img: 'https://images.unsplash.com/photo-1528207776546-365bb710ee93?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Păpănași cu brânză de oi și miere de trufe', desc: '', price: 180, img: 'https://images.unsplash.com/photo-1528207776546-365bb710ee93?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Papanași cu semințe de chia fără gluten', desc: '', price: 180, img: 'https://images.unsplash.com/photo-1528207776546-365bb710ee93?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Clătite cu somon și smântână', desc: '', price: 200, img: 'https://images.unsplash.com/photo-1528207776546-365bb710ee93?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Clătite cu somon și icre roșii', desc: '', price: 340, img: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Icre negre de Nisetru (28 gr) cu clătite', desc: '', price: 800, img: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Dejunul fermierului', desc: '', price: 200, img: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=500&q=80&auto=format&fit=crop' },
+    { name: 'SISTERS – șampanie / fresh de portocale', desc: '', price: 330, img: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Croissant cu gem, unt / cremă și nutella', desc: '', price: 110, img: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Scrambl cu sos de trufe', desc: '', price: 200, img: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Șakșuka', desc: '', price: 180, img: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Granola cu pomușoare și lapte de migdale / iaurt', desc: '', price: 170, img: 'https://images.unsplash.com/photo-1546548970-71785318a17b?w=500&q=80&auto=format&fit=crop' },
+  ],
+  'Gustări reci': [
+    { name: 'Bruschetta cu roșii (2 buc)', desc: '', price: 80, img: 'https://images.unsplash.com/photo-1484723091739-30990ff50914?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Spring-rolluri', desc: '', price: 170, img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Clătite cu somon și icre roșii', desc: '', price: 340, img: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Carpaccio de vițel', desc: '', price: 300, img: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Carpaccio de caracatiță', desc: '', price: 330, img: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Tartar de somon cu avocado', desc: '', price: 300, img: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Tartar de ton cu guacamole, wasabi aioli', desc: '', price: 300, img: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Tartar de vițel cu trufe', desc: '', price: 300, img: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Icre de Nisetru (28 gr) cu clătite și smântână / toasturi cu unt', desc: '', price: 800, img: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Pateu din ficat de gâscă cu dulceață din țelină', desc: '', price: 180, img: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Ardei copți cu roșii și brânză', desc: '', price: 260, img: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Platou asortat', desc: '', price: 460, img: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Platou de brânzeturi asortate', desc: '', price: 450, img: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Asorti din mezeluri', desc: '', price: 460, img: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=500&q=80&auto=format&fit=crop' },
+  ],
+  'Gustări calde': [
+    { name: 'Ton cu paste de soia și rucola', desc: '', price: 300, img: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Creveți crocanți în aluat', desc: '', price: 250, img: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Paste de soya cu legume', desc: '', price: 180, img: 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Foie gras cu fructe de pădure și blinele', desc: '', price: 430, img: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Gyoza cu rață', desc: '', price: 260, img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Gyoza cu creveți', desc: '', price: 260, img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Gyoza cu legume', desc: '', price: 220, img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Blinele din cartofi cu somon puțin sărat și smântână', desc: '', price: 250, img: 'https://images.unsplash.com/photo-1528207776546-365bb710ee93?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Pâine cu brânză și verdeață', desc: '', price: 240, img: 'https://images.unsplash.com/photo-1484723091739-30990ff50914?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Pâine caldă cu carne de vițel, ulei picant', desc: '', price: 400, img: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&q=80&auto=format&fit=crop' },
+  ],
+  'Salate': [
+    { name: 'Salată verde cu avocado și edamame', desc: '', price: 210, img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Salată «Grecească»', desc: '', price: 190, img: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Salată Tagliata cu vițel și rucola', desc: '', price: 350, img: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Salată de alge «Ciuca»', desc: '', price: 170, img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Caprese cu mozzarella de Buffalo', desc: '', price: 260, img: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Salată Caesar cu pui', desc: '', price: 200, img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Salată Caesar cu creveți', desc: '', price: 240, img: 'https://images.unsplash.com/photo-1564671165093-20688ff1fffa?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Salată cu caracatiță', desc: '', price: 310, img: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Olivie cu creveți', desc: '', price: 230, img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Olivie cu somon și icre roșii', desc: '', price: 260, img: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Salată «Șuba»', desc: '', price: 180, img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Poke cu somon și avocado', desc: '', price: 270, img: 'https://images.unsplash.com/photo-1546548970-71785318a17b?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Poke cu ton și avocado', desc: '', price: 280, img: 'https://images.unsplash.com/photo-1546548970-71785318a17b?w=500&q=80&auto=format&fit=crop' },
+  ],
+  'Supe': [
+    { name: 'Zeamă cu tăieței de casă', desc: '', price: 140, img: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Zeamă de pește din biban și somon', desc: '', price: 200, img: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Supă-cremă de spanac cu creveți', desc: '', price: 240, img: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Supă de linte cu pancetta', desc: '', price: 180, img: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Tom-yam cu orez', desc: '', price: 230, img: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Supă din porumb cu creveți', desc: '', price: 300, img: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=500&q=80&auto=format&fit=crop' },
+  ],
+  'Pizza': [
+    { name: 'Pizza cu creveți și caracatiță', desc: '', price: 500, img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Focaccia', desc: '', price: 100, img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Pizza Margherita', desc: '', price: 200, img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Pizza Tartuffo', desc: '', price: 490, img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Pizza cu icre roșii, somon și ricotta', desc: '', price: 490, img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Pizza Quattro formaggi', desc: '', price: 340, img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Pizza cu rață', desc: '', price: 360, img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Pizza cu ton', desc: '', price: 350, img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Pizza Caprini – cu brânză de capră', desc: '', price: 290, img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Pizza Pepperoni', desc: '', price: 280, img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Pizza Prosciutto', desc: '', price: 300, img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Pizza Verona – rulade din coppa cu Philadelphia și rucola', desc: '', price: 350, img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Pizza Pollo cu pui', desc: '', price: 240, img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Pizza Capriciosa – cu șuncă și anghinare', desc: '', price: 280, img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Pizza Vegană – cu legume, anghinare și roșii uscate', desc: '', price: 260, img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Pizza cu căpșune', desc: '', price: 250, img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&q=80&auto=format&fit=crop' },
+  ],
+  'Paste': [
+    { name: 'Tagliolini cu trufe', desc: '', price: 350, img: 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Fetuccini cu patru feluri de brânză', desc: '', price: 260, img: 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Tagliolini negre cu creveți și bottarga', desc: '', price: 280, img: 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Spaghetti cu fructe de mare', desc: '', price: 440, img: 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Tagliolini negre cu icre roșii', desc: '', price: 320, img: 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Tagliolini cu icre negre (28 gr)', desc: '', price: 860, img: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Pasta Carbonara', desc: '', price: 300, img: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Ravioli cu ricotta, spanac și trufe', desc: '', price: 300, img: 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Ravioli cu biban', desc: '', price: 270, img: 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Ravioli cu pui', desc: '', price: 260, img: 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=500&q=80&auto=format&fit=crop' },
+  ],
+  'Sushi & Rolluri': [
+    { name: 'Nighiri (1 buc) – Ton / Crevetă / Țipar / Scoici', desc: '', price: 70, img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Temaki (1 buc) – Somon / Ton / Creveți și avocado / Țipar / Scoici', desc: '', price: 165, img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Gunkan cu somon (2 buc)', desc: '', price: 150, img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Gunkan cu ton (2 buc)', desc: '', price: 160, img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Gunkan cu crevetă (2 buc)', desc: '', price: 150, img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Gunkan cu vită (2 buc)', desc: '', price: 150, img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Gunkan cu icre roșii (2 buc)', desc: '', price: 190, img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Gunkan cu icre negre (2 buc)', desc: '', price: 340, img: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Gunkan cu țipar (2 buc)', desc: '', price: 160, img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Gunkan cu scoici (2 buc)', desc: '', price: 180, img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Sisters', desc: '', price: 400, img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Roll vegan', desc: '', price: 200, img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Roll Sashimi (4 buc)', desc: '', price: 240, img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Philadelphia', desc: '', price: 300, img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Philadelphia Delux', desc: '', price: 340, img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Philadelphia Royal cu icre negre', desc: '', price: 610, img: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Coral', desc: '', price: 380, img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Canada', desc: '', price: 330, img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=500&q=80&auto=format&fit=crop' },
+    { name: 'California cu somon / creveți / țipar / ton', desc: '', price: 270, img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Dragon roșu', desc: '', price: 380, img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Dragon auriu', desc: '', price: 440, img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Roll cald cu creveți', desc: '', price: 300, img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Roll cald Philadelphia', desc: '', price: 300, img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Roll cald cu țipar', desc: '', price: 330, img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Roll cald sashimi cu somon', desc: '', price: 270, img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Roll cald cu somon și ton', desc: '', price: 350, img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=500&q=80&auto=format&fit=crop' },
+  ],
+  'Pește': [
+    { name: 'Biban la grill cu legume', desc: '', price: 370, img: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Biban pe aburi cu legume', desc: '', price: 370, img: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Fishburger cu biban', desc: '', price: 300, img: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Dorado în lapte de cocos cu spanac', desc: '', price: 380, img: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Dorado la grătar', desc: '', price: 380, img: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Somon la grill cu conopidă și broccoli', desc: '', price: 470, img: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Caracatiță cu legume', desc: '', price: 540, img: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Mix la grătar', desc: '', price: 1500, img: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&q=80&auto=format&fit=crop' },
+  ],
+  'Carne': [
+    { name: 'Mușchi de vițel cu sos de trufe și ciuperci', desc: '', price: 490, img: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Medalion de vițel în bacon, cu sos picant de vișine și fructe de pădure', desc: '', price: 400, img: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Burger în frunze de salată', desc: '', price: 320, img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Cheeseburger Dorblu', desc: '', price: 380, img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Burger cu sos de trufe', desc: '', price: 480, img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Steak Rib-Eye (SUA 100 gr)', desc: '', price: 400, img: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Steak Chateaubriand (200 gr)', desc: '', price: 460, img: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Piept de pui', desc: '', price: 260, img: 'https://images.unsplash.com/photo-1598515213692-6c0d4e95d3e1?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Șold de pui', desc: '', price: 260, img: 'https://images.unsplash.com/photo-1598515213692-6c0d4e95d3e1?w=500&q=80&auto=format&fit=crop' },
+  ],
+  'Garnituri': [
+    { name: 'Mix din frunze de salată', desc: '', price: 100, img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Broccoli', desc: '', price: 100, img: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Legume grilate', desc: '', price: 110, img: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Batat prăjit cu parmezan și sos de trufe', desc: '', price: 110, img: 'https://images.unsplash.com/photo-1600803907087-f56d462fd26b?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Mămăligă cu brânză și smântână', desc: '', price: 110, img: 'https://images.unsplash.com/photo-1600803907087-f56d462fd26b?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Cartofi', desc: '', price: 90, img: 'https://images.unsplash.com/photo-1600803907087-f56d462fd26b?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Cartofi ca acasă cu ou și șuncă', desc: '', price: 180, img: 'https://images.unsplash.com/photo-1600803907087-f56d462fd26b?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Orez fiert', desc: '', price: 100, img: 'https://images.unsplash.com/photo-1600803907087-f56d462fd26b?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Orez cu legume și ouă', desc: '', price: 140, img: 'https://images.unsplash.com/photo-1600803907087-f56d462fd26b?w=500&q=80&auto=format&fit=crop' },
+  ],
+  'Deserturi': [
+    { name: 'Gourmet mini – asorti', desc: '', price: 200, img: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Tortă «Kiev»', desc: '', price: 200, img: 'https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Eton mess', desc: '', price: 190, img: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Cheesecake', desc: '', price: 190, img: 'https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Profiteroluri', desc: '', price: 190, img: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Fondant din ciocolată', desc: '', price: 200, img: 'https://images.unsplash.com/photo-1574085733277-851d9d856a3a?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Fondant cu matcha', desc: '', price: 200, img: 'https://images.unsplash.com/photo-1574085733277-851d9d856a3a?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Macarons matcha-zmeură / alune-ciocolată / exotic', desc: '', price: 60, img: 'https://images.unsplash.com/photo-1558326567-98ae2405596b?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Sorbet asorti (1 buc)', desc: '', price: 60, img: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Platou de fructe asortate', desc: '', price: 550, img: 'https://images.unsplash.com/photo-1564093497595-593b96d80180?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Înghețată cu trufe', desc: '', price: 90, img: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=500&q=80&auto=format&fit=crop' },
+  ],
+};
+
+// ---------- Icons ----------
+const Svg = ({ children, size = 18, className = '' }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24"
+    fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"
+    className={className} aria-hidden="true">{children}</svg>
+);
+const MenuIcon  = (p) => <Svg {...p}><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></Svg>;
+const XIcon     = (p) => <Svg {...p}><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></Svg>;
+const ChevRight = (p) => <Svg {...p}><polyline points="9 6 15 12 9 18"/></Svg>;
+const CalIcon   = (p) => <Svg {...p}><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></Svg>;
+const ClockIcon = (p) => <Svg {...p}><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></Svg>;
+const PhoneIcon = (p) => <Svg {...p}><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.7.6 2.5a2 2 0 0 1-.5 2.1L8 9.6a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.8.3 1.6.5 2.5.6a2 2 0 0 1 1.7 2z"/></Svg>;
+const MailIcon  = (p) => <Svg {...p}><rect x="3" y="5" width="18" height="14" rx="2"/><polyline points="3 7 12 13 21 7"/></Svg>;
+const MapPinIcon= (p) => <Svg {...p}><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></Svg>;
+const InstaIcon = (p) => <Svg {...p}><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor"/></Svg>;
+const FbIcon    = (p) => <Svg {...p}><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></Svg>;
+const CartIcon  = (p) => <Svg {...p}><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></Svg>;
+const PlusIcon  = (p) => <Svg {...p}><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></Svg>;
+const MinusIcon = (p) => <Svg {...p}><line x1="5" y1="12" x2="19" y2="12"/></Svg>;
+const TrashIcon = (p) => <Svg {...p}><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></Svg>;
+const CheckCircle=(p)=> <Svg {...p}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></Svg>;
+const BagIcon   = (p) => <Svg {...p}><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></Svg>;
+
+// ---------- Reveal ----------
+function useReveal() {
+  React.useEffect(() => {
+    const els = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+    els.forEach(el => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+}
+
+// ---------- Nav ----------
+const NAV_LINKS = [
+  { id: 'meniu', label: 'Meniu' },
+  { id: 'galerie', label: 'Galerie' },
+  { id: 'rezervare', label: 'Rezervări' },
+  { id: 'bucatari', label: 'Bucătari' },
+  { id: 'despre', label: 'Despre noi' },
+  { id: 'contact', label: 'Contact' },
+];
+
+function Nav() {
+  const [scrolled, setScrolled] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    const fn = () => setScrolled(window.scrollY > 20);
+    fn(); window.addEventListener('scroll', fn, { passive: true });
+    return () => window.removeEventListener('scroll', fn);
+  }, []);
+
+  return (
+    <header className={`fixed top-0 inset-x-0 z-50 transition-all duration-500`}
+      style={{ background: scrolled ? 'rgba(14,11,8,.97)' : 'rgba(14,11,8,.0)', borderBottom: scrolled ? '1px solid #2c2620' : '1px solid transparent', backdropFilter: scrolled ? 'blur(12px)' : 'none' }}>
+
+      {/* Desktop nav */}
+      <div className="hidden md:grid max-w-7xl mx-auto px-8 h-20" style={{ gridTemplateColumns: '1fr auto 1fr' }}>
+        <nav className="flex items-center gap-8">
+          {NAV_LINKS.slice(0, 3).map(l => (
+            <a key={l.id} href={`#${l.id}`} className="text-[11px] font-medium tracking-[0.2em] uppercase transition-colors hover:text-amber-400" style={{ color: '#d4cdc6' }}>{l.label}</a>
+          ))}
+        </nav>
+        <a href="#top" className="flex items-center justify-center">
+          <img src="logo.jpg" alt={BRAND.name} className="h-16 w-auto object-contain" style={{}} />
+        </a>
+        <div className="flex items-center justify-end gap-8">
+          {NAV_LINKS.slice(3).map(l => (
+            <a key={l.id} href={`#${l.id}`} className="text-[11px] font-medium tracking-[0.2em] uppercase transition-colors hover:text-amber-400" style={{ color: '#d4cdc6' }}>{l.label}</a>
+          ))}
+          <a href="#rezervare" className="text-[11px] font-medium tracking-[0.2em] uppercase px-4 py-2 transition-all hover:opacity-80" style={{ border: '1px solid var(--accent)', color: 'var(--accent)', marginLeft: '1rem' }}>
+            Rezervă
+          </a>
+        </div>
+      </div>
+
+      {/* Mobile nav */}
+      <div className="md:hidden flex items-center justify-between px-5 h-16">
+        <div className="w-8" />
+        <a href="#top" className="absolute left-1/2 -translate-x-1/2">
+          <img src="logo.jpg" alt={BRAND.name} className="h-10 w-auto object-contain" style={{}} />
+        </a>
+        <button onClick={() => setOpen(o => !o)} style={{ color: '#d4cdc6' }}>
+          {open ? <XIcon size={22} /> : <MenuIcon size={22} />}
+        </button>
+      </div>
+      <div className={`md:hidden overflow-hidden transition-all duration-300 border-t ${open ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`} style={{ background: 'rgba(14,11,8,.98)', borderColor: 'var(--border)' }}>
+        <div className="px-5 py-4 flex flex-col gap-1">
+          {NAV_LINKS.map(l => (
+            <a key={l.id} href={`#${l.id}`} onClick={() => setOpen(false)} className="py-3 text-[13px] tracking-[0.15em] uppercase border-b last:border-0" style={{ color: 'var(--text)', borderColor: 'var(--border)' }}>{l.label}</a>
+          ))}
+          <a href="#rezervare" onClick={() => setOpen(false)} className="mt-3 text-center py-3 text-[12px] tracking-[0.2em] uppercase font-medium" style={{ border: '1px solid var(--accent)', color: 'var(--accent)' }}>Rezervă o masă</a>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+// ---------- Hero ----------
+function Hero() {
+  const [slide, setSlide] = React.useState(0);
+  const slides = [PHOTOS.hero1, PHOTOS.hero2, PHOTOS.hero3];
+  React.useEffect(() => {
+    const t = setInterval(() => setSlide(s => (s + 1) % slides.length), 4500);
+    return () => clearInterval(t);
+  }, []);
+  return (
+    <section id="top" className="relative h-screen min-h-[560px] overflow-hidden">
+      {slides.map((src, i) => (
+        <div key={i} className="absolute inset-0 transition-opacity duration-1000"
+          style={{ opacity: slide === i ? 1 : 0, backgroundImage: `url(${src})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+      ))}
+      <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,.35) 0%, rgba(0,0,0,.55) 60%, rgba(0,0,0,.7) 100%)' }} />
+      <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-5">
+        <h1 className="hero-anim-2 font-cormorant text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-white font-light tracking-[0.15em] uppercase leading-none mb-3">{BRAND.name}</h1>
+        <p className="hero-anim text-[10px] sm:text-[11px] tracking-[0.45em] uppercase text-white/70 mb-8">Restaurant · Bar · Café</p>
+        <div className="hero-anim-3">
+          <a href="#rezervare" className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full text-[13px] font-medium tracking-wide bg-white/15 backdrop-blur text-white border border-white/30 hover:bg-white/25 transition-colors">
+            <CalIcon size={15} /> Rezervă o Masă
+          </a>
+        </div>
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2">
+          {slides.map((_, i) => (
+            <button key={i} onClick={() => setSlide(i)} className="w-1.5 h-1.5 rounded-full transition-all"
+              style={{ background: slide === i ? '#fff' : 'rgba(255,255,255,.4)', transform: slide === i ? 'scale(1.4)' : 'scale(1)' }} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ---------- Menu Card ----------
+function MenuCard({ item }) {
+  return (
+    <div className="menu-card rounded-2xl overflow-hidden border flex flex-col" style={{ background: 'var(--card)', borderColor: 'var(--border)', boxShadow: '0 4px 24px rgba(0,0,0,.4)' }}>
+      <div className="p-5 flex flex-col flex-1">
+        <h3 className="font-display text-xl flex-1" style={{ color: 'var(--text)' }}>{item.name}</h3>
+        {item.desc ? <p className="mt-1.5 text-[13px] leading-relaxed" style={{ color: 'var(--muted)' }}>{item.desc}</p> : null}
+        <div className="mt-4">
+          <span className="font-display text-2xl" style={{ color: 'var(--accent)' }}>
+            {item.price} <span className="text-[13px] font-normal" style={{ color: 'var(--muted)' }}>lei</span>
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ---------- Menu Section ----------
+function MenuSection() {
+  const cats = Object.keys(MENU);
+  const [active, setActive] = React.useState(cats[0]);
+
+  return (
+    <section id="meniu" className="py-16 md:py-32 px-5 md:px-8" style={{ background: 'var(--bg)' }}>
+      <div className="max-w-6xl mx-auto">
+        <div className="reveal text-center mb-14">
+          <p className="text-[11px] tracking-[0.45em] uppercase mb-3" style={{ color: 'var(--accent)' }}>Meniu</p>
+          <h2 className="font-display text-4xl md:text-5xl" style={{ color: 'var(--text)' }}>Bucătăria noastră</h2>
+          <p className="mt-4 text-[15px] max-w-md mx-auto" style={{ color: 'var(--muted)' }}>Mic dejun, gustări, salate, sushi, pizza, paste, pește, carne și deserturi — totul sub un singur acoperiș.</p>
+          <div className="mt-8 h-px w-16 mx-auto" style={{ background: 'var(--accent)' }} />
+        </div>
+        <div className="reveal flex flex-wrap justify-center gap-2 mb-10">
+          {cats.map(c => (
+            <button key={c} onClick={() => setActive(c)}
+              className={`px-5 py-2 rounded-full text-[13px] font-medium tracking-wide transition-all border ${active === c ? 'text-white border-transparent' : 'bg-white'}`}
+              style={active === c ? { background: 'var(--accent)', borderColor: 'var(--accent)' } : { borderColor: 'var(--border)', color: 'var(--muted)' }}>
+              {c}
+            </button>
+          ))}
+        </div>
+        <div className="reveal grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {MENU[active].map(item => (
+            <MenuCard key={item.name} item={item} />
+          ))}
+        </div>
+        <p className="reveal text-center mt-10 text-[12px] tracking-[0.25em] uppercase" style={{ color: 'var(--muted)' }}>
+          Prețurile includ TVA · Informații alergeni disponibile la cerere
+        </p>
+      </div>
+    </section>
+  );
+}
+
+// ---------- Gallery ----------
+const GALLERY = [
+  { src: 'restaurant.jpg',         label: 'Restaurant',   col: 'md:col-span-2 md:row-span-2' },
+  { src: 'restaurant_elegant.jpg', label: 'Interior elegant' },
+  { src: 'terrace_logo.jpg',       label: 'Intrare' },
+  { src: 'restaurant2.jpg',        label: 'Sală' },
+  { src: 'restaurant3.jpg',        label: 'Atmosferă' },
+  { src: 'restaurant4.jpg',        label: 'Detalii' },
+  { src: 'terrace.jpg',            label: 'Terasă',        col: 'md:col-span-2' },
+  { src: 'terrace2.jpg',           label: 'Terasă de vară' },
+  { src: 'restaurant5.jpg',        label: 'Seară' },
+  { src: 'restaurant6.jpg',        label: 'Lounge',        col: 'md:col-span-2' },
+  { src: 'food.jpg',               label: 'Preparate' },
+  { src: 'cocktail1.jpg',          label: 'Cocktailuri' },
+  { src: 'dessert.jpg',            label: 'Deserturi' },
+];
+function GalleryItem({ g }) {
+  return (
+    <figure className={`relative overflow-hidden rounded-xl group ${g.col || ''}`}>
+      <img src={g.src} alt={g.label} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
+      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/35 transition-all duration-500" />
+      <figcaption className="absolute bottom-0 left-0 right-0 p-4 text-white text-[11px] tracking-[0.2em] uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        style={{ background: 'linear-gradient(to top, rgba(0,0,0,.65), transparent)' }}>{g.label}</figcaption>
+    </figure>
+  );
+}
+function Gallery() {
+  return (
+    <section id="galerie" className="py-16 md:py-32 px-5 md:px-8" style={{ background: 'var(--cream)' }}>
+      <div className="max-w-6xl mx-auto">
+        <div className="reveal text-center mb-14">
+          <p className="text-[11px] tracking-[0.45em] uppercase mb-3" style={{ color: 'var(--accent)' }}>Galerie</p>
+          <h2 className="font-display text-4xl md:text-5xl" style={{ color: 'var(--text)' }}>Momentele noastre</h2>
+          <div className="mt-8 h-px w-16 mx-auto" style={{ background: 'var(--accent)' }} />
+        </div>
+        <div className="reveal grid grid-cols-2 md:grid-cols-3 auto-rows-[280px] md:auto-rows-[320px] gap-3">
+          {GALLERY.map((g, i) => <GalleryItem key={i} g={g} />)}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ---------- Chefs ----------
+function Chefs() {
+  return (
+    <section id="bucatari" className="py-16 md:py-32 px-5 md:px-8" style={{ background: 'var(--warm)' }}>
+      <div className="max-w-5xl mx-auto grid lg:grid-cols-2 gap-10 lg:gap-20 items-center">
+        <div className="reveal relative">
+          <img src="chef_pizza.jpg" alt="Bucătarii Sisters" className="w-full aspect-[4/5] object-cover rounded-2xl" />
+          <div className="hidden sm:block absolute -bottom-6 -left-4 md:-left-8 rounded-xl p-5 shadow-lg max-w-[200px]" style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
+            <p className="font-display italic text-lg leading-snug" style={{ color: 'var(--text)' }}>„Gătim cu pasiune, servim cu suflet."</p>
+            <p className="mt-2 text-[11px] tracking-wide uppercase" style={{ color: 'var(--muted)' }}>— Echipa Sisters</p>
+          </div>
+        </div>
+        <div className="reveal">
+          <p className="text-[11px] tracking-[0.45em] uppercase mb-3" style={{ color: 'var(--accent)' }}>Bucătarii noștri</p>
+          <h2 className="font-display text-4xl md:text-5xl leading-tight" style={{ color: 'var(--text)' }}>Artă pe farfurie,<br /><em>în fiecare zi.</em></h2>
+          <div className="mt-8 space-y-4 text-[15px] leading-relaxed" style={{ color: 'var(--muted)' }}>
+            <p>La Sisters, bucătăria este condusă de o echipă de bucătari cu experiență bogată. Fiecare preparat este rezultatul unei combinații între tehnici clasice și ingrediente atent selecționate de la producători locali.</p>
+            <p>Pasiunea lor pentru detaliu se reflectă în fiecare farfurie — de la sushi-ul pregătit cu precizie japoneză, până la pastele artizanale și grătarele savuroase. Meniul se reinventează sezonier, urmând ritmul naturii și inspirația momentului.</p>
+            <p>Filosofia echipei noastre este simplă: materia primă de calitate, respect față de rețete tradiționale și curajul de a inova. Rezultatul îl descoperiți la fiecare masă.</p>
+          </div>
+          <div className="mt-10 grid grid-cols-3 gap-6">
+            {[{ n: '15+', l: 'Ani experiență' }, { n: '3', l: 'Bucătari pasionați' }, { n: '150+', l: 'Preparate în meniu' }].map(s => (
+              <div key={s.n}>
+                <div className="font-display text-3xl font-medium" style={{ color: 'var(--accent)' }}>{s.n}</div>
+                <div className="text-[11px] tracking-[0.2em] uppercase mt-1" style={{ color: 'var(--muted)' }}>{s.l}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ---------- Reservation ----------
+function Field({ label, children }) {
+  return (
+    <label className="block">
+      <span className="block text-[10px] tracking-[0.3em] uppercase mb-1.5 font-medium" style={{ color: 'var(--muted)' }}>{label}</span>
+      {children}
+    </label>
+  );
+}
+function Reservation() {
+  const [form, setForm] = React.useState({ name: '', date: '', time: '19:30', guests: '2', phone: '', notes: '' });
+  const [submitted, setSubmitted] = React.useState(false);
+  const set = k => e => setForm(f => ({ ...f, [k]: e.target.value }));
+  const submit = e => { e.preventDefault(); setSubmitted(true); setTimeout(() => setSubmitted(false), 5000); };
+  const today = new Date().toISOString().slice(0, 10);
+  return (
+    <section id="rezervare" className="py-16 md:py-32 px-5 md:px-8" style={{ background: 'var(--warm)' }}>
+      <div className="max-w-5xl mx-auto grid lg:grid-cols-2 gap-10 lg:gap-20 items-start">
+        <div className="reveal">
+          <p className="text-[11px] tracking-[0.45em] uppercase mb-3" style={{ color: 'var(--accent)' }}>Rezervări</p>
+          <h2 className="font-display text-4xl md:text-5xl leading-tight" style={{ color: 'var(--text)' }}>Rezervați<br /><em>masa voastră.</em></h2>
+          <p className="mt-5 text-[15px] leading-relaxed max-w-sm" style={{ color: 'var(--muted)' }}>Recomandăm rezervarea cu cel puțin 24 de ore înainte, mai ales în weekend.</p>
+          <div className="mt-8 h-px w-12" style={{ background: 'var(--border)' }} />
+          <ul className="mt-8 space-y-4">
+            {[
+              { Icon: ClockIcon, text: 'Mar–Joi 12:00–23:00 · Vin–Sâm 12:00–00:00 · Dum 12:00–22:00 · Luni închis' },
+              { Icon: PhoneIcon, text: BRAND.phone },
+              { Icon: MailIcon,  text: BRAND.emailReservations },
+            ].map(({ Icon, text }, i) => (
+              <li key={i} className="flex items-start gap-3 text-[14px]" style={{ color: 'var(--muted)' }}>
+                <Icon size={15} className="mt-0.5 flex-none" style={{ color: 'var(--accent)' }} />{text}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <form onSubmit={submit} className="reveal rounded-2xl p-6 md:p-8 border" style={{ background: 'var(--card)', borderColor: 'var(--border)', boxShadow: '0 4px 40px rgba(0,0,0,.4)' }}>
+          <h3 className="font-display text-2xl mb-6" style={{ color: 'var(--text)' }}>Formular Rezervare</h3>
+          <div className="space-y-5">
+            <Field label="Nume complet"><input required type="text" value={form.name} onChange={set('name')} placeholder="Ion Popescu" className="w-full py-2.5 text-[15px] border-b focus:border-amber-500 transition-colors bg-transparent" style={{ borderColor: 'var(--border)', color: 'var(--text)' }} /></Field>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <Field label="Data"><input required type="date" min={today} value={form.date} onChange={set('date')} className="w-full py-2.5 text-[15px] border-b focus:border-amber-500 transition-colors bg-transparent" style={{ borderColor: 'var(--border)', color: 'var(--text)', colorScheme: 'dark' }} /></Field>
+              <Field label="Ora">
+                <select value={form.time} onChange={set('time')} className="w-full py-2.5 text-[15px] border-b focus:border-amber-500 transition-colors bg-transparent" style={{ borderColor: 'var(--border)', color: 'var(--text)' }}>
+                  {['12:00','13:00','14:00','18:00','18:30','19:00','19:30','20:00','20:30','21:00','21:30'].map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </Field>
+            </div>
+            <Field label="Număr persoane">
+              <div className="flex flex-wrap gap-2 pt-3">
+                {['1','2','3','4','5','6','7','8+'].map(n => (
+                  <button type="button" key={n} onClick={() => setForm(f => ({ ...f, guests: n }))}
+                    className={`w-10 h-10 rounded-full text-[13px] font-medium transition-all border ${form.guests === n ? 'text-white border-transparent' : ''}`}
+                    style={form.guests === n ? { background: 'var(--accent)', borderColor: 'var(--accent)' } : { borderColor: 'var(--border)', color: 'var(--muted)' }}>{n}</button>
+                ))}
+              </div>
+            </Field>
+            <Field label="Telefon"><input required type="tel" value={form.phone} onChange={set('phone')} placeholder="+373 ..." className="w-full py-2.5 text-[15px] border-b focus:border-amber-500 transition-colors bg-transparent" style={{ borderColor: 'var(--border)', color: 'var(--text)' }} /></Field>
+            <Field label="Cerințe speciale (opțional)"><textarea rows="2" value={form.notes} onChange={set('notes')} placeholder="Aniversare, alergii, masă în exterior..." className="w-full py-2.5 text-[15px] border-b focus:border-amber-500 transition-colors bg-transparent resize-none" style={{ borderColor: 'var(--border)', color: 'var(--text)' }} /></Field>
+            <button type="submit" className="w-full py-3.5 rounded-full text-[13px] font-medium tracking-wide text-white transition-opacity hover:opacity-90 flex items-center justify-center gap-2"
+              style={{ background: submitted ? '#27ae60' : 'var(--accent)' }}>
+              {submitted ? '✓ Rezervare trimisă!' : <><CalIcon size={15} /> Confirmă Rezervarea</>}
+            </button>
+            {submitted && <p className="text-center text-[12px] mt-2" style={{ color: 'var(--muted)' }}>Vă vom contacta în scurt timp pentru confirmare.</p>}
+          </div>
+        </form>
+      </div>
+    </section>
+  );
+}
+
+// ---------- About ----------
+function About() {
+  return (
+    <section id="despre" className="py-16 md:py-32 px-5 md:px-8" style={{ background: 'var(--cream)' }}>
+      <div className="max-w-5xl mx-auto grid lg:grid-cols-2 gap-10 lg:gap-20 items-center">
+        <div className="reveal relative pb-8 md:pb-0">
+          <img src={PHOTOS.about} alt="Bucătărie" className="w-full aspect-[4/5] object-cover rounded-2xl" />
+          <div className="hidden sm:block absolute -bottom-6 -right-4 md:-right-8 rounded-xl p-5 shadow-lg max-w-[220px]" style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
+            <p className="font-display italic text-lg leading-snug" style={{ color: 'var(--text)' }}>„Un loc de neuitat!"</p>
+            <p className="mt-2 text-[11px] tracking-wide uppercase" style={{ color: 'var(--muted)' }}>— Clienții noștri</p>
+          </div>
+        </div>
+        <div className="reveal">
+          <p className="text-[11px] tracking-[0.45em] uppercase mb-3" style={{ color: 'var(--accent)' }}>Povestea noastră</p>
+          <h2 className="font-display text-4xl md:text-5xl leading-tight" style={{ color: 'var(--text)' }}>Pasiunea pentru<br /><em>mâncare autentică.</em></h2>
+          <div className="mt-8 space-y-4 text-[15px] leading-relaxed" style={{ color: 'var(--muted)' }}>
+            <p>Sisters este locul unde atmosfera caldă se îmbină cu bucătăria variată — de la mic dejun și salate proaspete, până la preparate la grătar și cocktailuri de autor.</p>
+            <p>Restaurantul nostru oferă o experiență completă: terasă primitoare, interior elegant și un meniu care satisface orice poftă.</p>
+          </div>
+          <div className="mt-10 grid grid-cols-3 gap-6">
+            {[{ n: 'Sisters', l: 'Restaurant' }, { n: '2008', l: 'Fondat în' }, { n: '6+', l: 'Categorii meniu' }].map(s => (
+              <div key={s.n}>
+                <div className="font-display text-3xl font-medium" style={{ color: 'var(--accent)' }}>{s.n}</div>
+                <div className="text-[11px] tracking-[0.25em] uppercase mt-1" style={{ color: 'var(--muted)' }}>{s.l}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ---------- Contact ----------
+function Contact() {
+  return (
+    <section id="contact" className="py-16 md:py-32 px-5 md:px-8" style={{ background: 'var(--bg)' }}>
+      <div className="max-w-5xl mx-auto">
+        <div className="reveal text-center mb-14">
+          <p className="text-[11px] tracking-[0.45em] uppercase mb-3" style={{ color: 'var(--accent)' }}>Contact</p>
+          <h2 className="font-display text-4xl md:text-5xl" style={{ color: 'var(--text)' }}>Vă așteptăm</h2>
+          <div className="mt-8 h-px w-16 mx-auto" style={{ background: 'var(--accent)' }} />
+        </div>
+        <div className="reveal grid lg:grid-cols-[1.5fr_1fr] gap-6">
+          <div className="relative rounded-2xl overflow-hidden border" style={{ borderColor: 'var(--border)', minHeight: 320 }}>
+            <iframe
+              src="https://maps.google.com/maps?q=Mihai%20Eminescu%2050%2C%20Chi%C8%99in%C4%83u%2C%20Moldova&t=&z=16&ie=UTF8&iwloc=&output=embed"
+              width="100%" height="100%"
+              style={{ position: 'absolute', inset: 0, border: 0, filter: 'grayscale(40%) contrast(1.1) brightness(0.85)' }}
+              allowFullScreen="" loading="lazy" referrerPolicy="no-referrer-when-downgrade"
+            />
+          </div>
+          <div className="border rounded-2xl p-7 flex flex-col gap-6" style={{ background: 'var(--card)', borderColor: 'var(--border)' }}>
+            <h3 className="font-display text-2xl" style={{ color: 'var(--text)' }}>Găsiți-ne</h3>
+            {[
+              { Icon: MapPinIcon, title: 'Adresă', text: `${BRAND.addressLine1}, ${BRAND.addressLine2}` },
+              { Icon: ClockIcon,  title: 'Program', text: 'Mar–Joi 12:00–23:00\nVin–Sâm 12:00–00:00\nDum 12:00–22:00\nLuni · închis' },
+              { Icon: PhoneIcon,  title: 'Telefon', text: BRAND.phone },
+              { Icon: MailIcon,   title: 'Email', text: BRAND.emailContact },
+            ].map(({ Icon, title, text }, i) => (
+              <div key={i} className="flex gap-3">
+                <span className="w-8 h-8 rounded-full flex items-center justify-center flex-none" style={{ background: 'var(--cream)' }}>
+                  <Icon size={14} style={{ color: 'var(--accent)' }} />
+                </span>
+                <div>
+                  <p className="text-[10px] tracking-[0.25em] uppercase mb-0.5" style={{ color: 'var(--muted)' }}>{title}</p>
+                  <p className="text-[14px] leading-relaxed whitespace-pre-line" style={{ color: 'var(--text)' }}>{text}</p>
+                </div>
+              </div>
+            ))}
+            <div className="pt-4 border-t flex items-center gap-3" style={{ borderColor: 'var(--border)' }}>
+              <span className="text-[11px] tracking-wide uppercase" style={{ color: 'var(--muted)' }}>Social</span>
+              {[InstaIcon, FbIcon].map((Icon, i) => (
+                <a key={i} href="#" className="w-9 h-9 rounded-full border flex items-center justify-center transition-colors hover:border-amber-500" style={{ borderColor: 'var(--border)', color: 'var(--muted)' }}>
+                  <Icon size={14} />
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ---------- Footer ----------
+function Footer() {
+  return (
+    <footer className="border-t py-8 px-5 md:px-8" style={{ borderColor: 'var(--border)', background: 'var(--cream)' }}>
+      <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+        <img src="logo.jpg" alt={BRAND.name} className="h-12 w-auto object-contain" />
+        <div className="text-center">
+          <p className="text-[11px] tracking-[0.2em] uppercase" style={{ color: 'var(--muted)' }}>© {BRAND.year} {BRAND.name}</p>
+          <p className="text-[10px] mt-1" style={{ color: 'var(--muted)' }}>Realizat de Dogaru Catalin · +373 60 171 888</p>
+        </div>
+        <div className="flex gap-5 text-[12px]" style={{ color: 'var(--muted)' }}>
+          <a href="#" className="hover:text-amber-400 transition-colors">Termeni</a>
+          <a href="#" className="hover:text-amber-400 transition-colors">Confidențialitate</a>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+// ---------- Cart Item ----------
+function CartItem({ item, onUpdateQty, onRemove }) {
+  return (
+    <div className="flex gap-3 items-start">
+      <img src={item.img} alt={item.name} className="w-16 h-16 object-cover rounded-xl flex-none" />
+      <div className="flex-1 min-w-0">
+        <p className="text-[14px] font-medium truncate" style={{ color: 'var(--text)' }}>{item.name}</p>
+        <p className="text-[13px] mt-0.5" style={{ color: 'var(--accent)' }}>{item.price} lei</p>
+        <div className="mt-2 flex items-center gap-2">
+          <button onClick={() => onUpdateQty(item.name, item.qty - 1)} className="w-7 h-7 rounded-full flex items-center justify-center border transition-colors hover:border-amber-500" style={{ borderColor: 'var(--border)', color: 'var(--muted)' }}>
+            <MinusIcon size={12} />
+          </button>
+          <span className="text-[14px] font-medium w-5 text-center" style={{ color: 'var(--text)' }}>{item.qty}</span>
+          <button onClick={() => onUpdateQty(item.name, item.qty + 1)} className="w-7 h-7 rounded-full flex items-center justify-center border transition-colors hover:border-amber-500" style={{ borderColor: 'var(--border)', color: 'var(--muted)' }}>
+            <PlusIcon size={12} />
+          </button>
+        </div>
+      </div>
+      <div className="flex flex-col items-end gap-2">
+        <p className="text-[14px] font-medium" style={{ color: 'var(--text)' }}>{item.price * item.qty} lei</p>
+        <button onClick={() => onRemove(item.name)} className="w-7 h-7 rounded-full flex items-center justify-center transition-colors hover:bg-amber-900/20" style={{ color: 'var(--muted)' }}>
+          <TrashIcon size={13} />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ---------- Cart Sidebar ----------
+function CartSidebar({ open, cart, total, onClose, onUpdateQty, onRemove, onCheckout }) {
+  const count = cart.reduce((s, i) => s + i.qty, 0);
+  React.useEffect(() => {
+    document.body.style.overflow = open ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [open]);
+  return (
+    <>
+      <div className="cart-backdrop fixed inset-0 z-40 bg-black/40" style={{ opacity: open ? 1 : 0, pointerEvents: open ? 'auto' : 'none' }} onClick={onClose} />
+      <div className="cart-sidebar fixed right-0 top-0 h-full z-50 w-full sm:max-w-sm flex flex-col shadow-2xl" style={{ background: '#110e0b', transform: open ? 'translateX(0)' : 'translateX(100%)' }}>
+        <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: 'var(--border)' }}>
+          <div className="flex items-center gap-2">
+            <CartIcon size={18} style={{ color: 'var(--accent)' }} />
+            <h2 className="font-display text-xl" style={{ color: 'var(--text)' }}>Coșul tău {count > 0 && <span className="text-[16px]">({count})</span>}</h2>
+          </div>
+          <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center transition-colors hover:bg-white/10" style={{ color: 'var(--muted)' }}>
+            <XIcon size={16} />
+          </button>
+        </div>
+        <div className="flex-1 overflow-y-auto px-5 py-4">
+          {cart.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-full gap-4 text-center">
+              <CartIcon size={48} style={{ color: 'var(--border)' }} />
+              <div>
+                <p className="font-display text-xl" style={{ color: 'var(--text)' }}>Coșul este gol</p>
+                <p className="text-[13px] mt-1" style={{ color: 'var(--muted)' }}>Adaugă produse din meniu pentru a continua.</p>
+              </div>
+              <button onClick={onClose} className="px-5 py-2.5 rounded-full text-[13px] font-medium text-white" style={{ background: 'var(--accent)' }}>Vezi Meniul</button>
+            </div>
+          ) : (
+            <div className="space-y-5 divide-y" style={{ borderColor: 'var(--border)' }}>
+              {cart.map(item => (
+                <div key={item.name} className="pt-5 first:pt-0">
+                  <CartItem item={item} onUpdateQty={onUpdateQty} onRemove={onRemove} />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        {cart.length > 0 && (
+          <div className="px-5 py-5 border-t" style={{ borderColor: 'var(--border)', background: 'var(--cream)' }}>
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-[13px]" style={{ color: 'var(--muted)' }}>Subtotal</span>
+              <span className="font-display text-2xl" style={{ color: 'var(--text)' }}>{total} <span className="text-[14px]" style={{ color: 'var(--muted)' }}>lei</span></span>
+            </div>
+            <button onClick={onCheckout} className="w-full py-3.5 rounded-full text-[13px] font-medium tracking-wide text-white transition-opacity hover:opacity-90 flex items-center justify-center gap-2" style={{ background: 'var(--accent)' }}>
+              <BagIcon size={15} /> Finalizează comanda
+            </button>
+            <p className="text-center text-[11px] mt-3" style={{ color: 'var(--muted)' }}>Livrare gratuită la comenzi peste 150 lei</p>
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
+
+// ---------- Checkout Modal ----------
+function CheckoutModal({ cart, total, onClose, onSuccess }) {
+  const [form, setForm] = React.useState({ name: '', phone: '', address: '', notes: '' });
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState('');
+  const set = k => e => setForm(f => ({ ...f, [k]: e.target.value }));
+
+  React.useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = ''; };
+  }, []);
+
+  const submit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    try {
+      const { error: err } = await db.from('orders').insert([{
+        name: form.name,
+        phone: form.phone,
+        address: form.address,
+        notes: form.notes,
+        items: cart.map(i => ({ name: i.name, price: i.price, qty: i.qty })),
+        total,
+        status: 'nouă',
+      }]);
+      if (err) throw new Error(err.message);
+      onSuccess();
+    } catch (err) {
+      setError(err.message || 'Eroare la plasarea comenzii. Încearcă din nou.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,.6)' }}>
+      <div className="rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl" style={{ background: '#110e0b' }}>
+        <div className="flex items-center justify-between px-6 py-4 border-b sticky top-0 rounded-t-2xl" style={{ background: '#110e0b', borderColor: 'var(--border)' }}>
+          <h2 className="font-display text-xl" style={{ color: 'var(--text)' }}>Finalizare Comandă</h2>
+          <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center transition-colors hover:bg-white/10" style={{ color: 'var(--muted)' }}>
+            <XIcon size={16} />
+          </button>
+        </div>
+        <div className="px-6 py-5">
+          <div className="mb-6 rounded-xl p-4" style={{ background: 'var(--cream)' }}>
+            <p className="text-[10px] tracking-[0.3em] uppercase font-medium mb-3" style={{ color: 'var(--muted)' }}>Sumar comandă</p>
+            <div className="space-y-2">
+              {cart.map(item => (
+                <div key={item.name} className="flex justify-between text-[14px]">
+                  <span style={{ color: 'var(--text)' }}>{item.name} <span style={{ color: 'var(--muted)' }}>×{item.qty}</span></span>
+                  <span className="font-medium" style={{ color: 'var(--text)' }}>{item.price * item.qty} lei</span>
+                </div>
+              ))}
+            </div>
+            <div className="mt-3 pt-3 border-t flex justify-between" style={{ borderColor: 'var(--border)' }}>
+              <span className="font-medium text-[14px]" style={{ color: 'var(--text)' }}>Total</span>
+              <span className="font-display text-xl" style={{ color: 'var(--accent)' }}>{total} lei</span>
+            </div>
+          </div>
+          <form onSubmit={submit} className="space-y-5">
+            <Field label="Nume complet"><input required type="text" value={form.name} onChange={set('name')} placeholder="Ion Popescu" className="w-full py-2.5 text-[15px] border-b focus:border-amber-500 transition-colors bg-transparent" style={{ borderColor: 'var(--border)', color: 'var(--text)' }} /></Field>
+            <Field label="Telefon"><input required type="tel" value={form.phone} onChange={set('phone')} placeholder="+373 69 000 000" className="w-full py-2.5 text-[15px] border-b focus:border-amber-500 transition-colors bg-transparent" style={{ borderColor: 'var(--border)', color: 'var(--text)' }} /></Field>
+            <Field label="Adresă de livrare"><textarea required rows="2" value={form.address} onChange={set('address')} placeholder="Strada, număr, apartament, oraș..." className="w-full py-2.5 text-[15px] border-b focus:border-amber-500 transition-colors bg-transparent resize-none" style={{ borderColor: 'var(--border)', color: 'var(--text)' }} /></Field>
+            <Field label="Observații (opțional)"><textarea rows="2" value={form.notes} onChange={set('notes')} placeholder="Alergii, preferințe..." className="w-full py-2.5 text-[15px] border-b focus:border-amber-500 transition-colors bg-transparent resize-none" style={{ borderColor: 'var(--border)', color: 'var(--text)' }} /></Field>
+            {error && <div className="px-4 py-3 rounded-xl text-[13px]" style={{ background: '#2a1010', color: '#f87171', border: '1px solid #4a1f1f' }}>{error}</div>}
+            <button type="submit" disabled={loading} className="w-full py-3.5 rounded-full text-[13px] font-medium tracking-wide text-white flex items-center justify-center gap-2" style={{ background: 'var(--accent)', opacity: loading ? 0.7 : 1 }}>
+              {loading ? 'Se trimite...' : <><BagIcon size={15} /> Plasează comanda</>}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ---------- Success Toast ----------
+function SuccessToast({ onDismiss }) {
+  React.useEffect(() => { const t = setTimeout(onDismiss, 5000); return () => clearTimeout(t); }, [onDismiss]);
+  return (
+    <div className="toast-in fixed bottom-6 right-6 z-[70] flex items-center gap-3 px-5 py-4 rounded-2xl shadow-2xl text-white" style={{ background: '#1e1a14', border: '1px solid var(--border)', maxWidth: 340 }}>
+      <div className="w-9 h-9 rounded-full flex items-center justify-center flex-none" style={{ background: '#27ae60' }}>
+        <CheckCircle size={18} />
+      </div>
+      <div>
+        <p className="font-medium text-[14px]">Comanda a fost plasată!</p>
+        <p className="text-[12px] text-white/70 mt-0.5">Vă vom contacta în scurt timp pentru confirmare.</p>
+      </div>
+      <button onClick={onDismiss} className="ml-2 flex-none opacity-60 hover:opacity-100"><XIcon size={14} /></button>
+    </div>
+  );
+}
+
+// ---------- App ----------
+function App() {
+  useReveal();
+  return (
+    <div>
+      <Nav />
+      <main>
+        <Hero />
+        <MenuSection />
+        <Chefs />
+        <Gallery />
+        <Reservation />
+        <About />
+        <Contact />
+      </main>
+      <Footer />
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
