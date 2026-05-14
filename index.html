@@ -446,9 +446,16 @@ function MenuCard({ item }) {
 }
 
 // ---------- Menu Section ----------
+const PREVIEW = 6;
 function MenuSection() {
   const cats = Object.keys(MENU);
   const [active, setActive] = React.useState(cats[0]);
+  const [expanded, setExpanded] = React.useState(false);
+
+  const handleCatChange = (c) => { setActive(c); setExpanded(false); };
+  const items = MENU[active];
+  const visible = expanded ? items : items.slice(0, PREVIEW);
+  const hasMore = items.length > PREVIEW;
 
   return (
     <section id="meniu" className="py-16 md:py-32 px-5 md:px-8" style={{ background: 'var(--bg)' }}>
@@ -459,21 +466,32 @@ function MenuSection() {
           <p className="mt-4 text-[15px] max-w-md mx-auto" style={{ color: 'var(--muted)' }}>Mic dejun, gustări, salate, sushi, pizza, paste, pește, carne și deserturi — totul sub un singur acoperiș.</p>
           <div className="mt-8 h-px w-16 mx-auto" style={{ background: 'var(--accent)' }} />
         </div>
-        <div className="reveal flex flex-wrap justify-center gap-2 mb-10">
+        <div className="reveal flex flex-wrap justify-center gap-x-8 gap-y-3 mb-10">
           {cats.map(c => (
-            <button key={c} onClick={() => setActive(c)}
-              className={`px-5 py-2 rounded-full text-[13px] font-medium tracking-wide transition-all border ${active === c ? 'text-white border-transparent' : 'bg-white'}`}
-              style={active === c ? { background: 'var(--accent)', borderColor: 'var(--accent)' } : { borderColor: 'var(--border)', color: 'var(--muted)' }}>
+            <button key={c} onClick={() => handleCatChange(c)}
+              className="relative pb-2 text-[12px] tracking-[0.2em] uppercase transition-colors"
+              style={{ color: active === c ? 'var(--accent)' : 'var(--muted)' }}>
               {c}
+              <span className="absolute bottom-0 left-0 right-0 h-px transition-all duration-300"
+                style={{ background: 'var(--accent)', opacity: active === c ? 1 : 0 }} />
             </button>
           ))}
         </div>
         <div className="reveal grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {MENU[active].map(item => (
+          {visible.map(item => (
             <MenuCard key={item.name} item={item} />
           ))}
         </div>
-        <p className="reveal text-center mt-10 text-[12px] tracking-[0.25em] uppercase" style={{ color: 'var(--muted)' }}>
+        {hasMore && (
+          <div className="text-center mt-8">
+            <button onClick={() => setExpanded(e => !e)}
+              className="px-8 py-3 rounded-full text-[13px] font-medium tracking-wide transition-all border"
+              style={{ borderColor: 'var(--accent)', color: 'var(--accent)' }}>
+              {expanded ? `Arată mai puțin ↑` : `Vezi toate preparatele (${items.length - PREVIEW} mai multe) ↓`}
+            </button>
+          </div>
+        )}
+        <p className="reveal text-center mt-8 text-[12px] tracking-[0.25em] uppercase" style={{ color: 'var(--muted)' }}>
           Prețurile includ TVA · Informații alergeni disponibile la cerere
         </p>
       </div>
