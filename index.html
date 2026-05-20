@@ -237,17 +237,30 @@ const NAV_LINKS = [
 
 function Nav() {
   const [scrolled, setScrolled] = React.useState(false);
+  const [hidden, setHidden] = React.useState(false);
   const [open, setOpen] = React.useState(false);
+  const lastY = React.useRef(0);
 
   React.useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 20);
+    const fn = () => {
+      const y = window.scrollY;
+      const mobile = window.innerWidth < 768;
+      setScrolled(y > 20);
+      if (mobile && y > 80) {
+        setHidden(y > lastY.current);
+        if (y <= lastY.current) setOpen(false);
+      } else {
+        setHidden(false);
+      }
+      lastY.current = y;
+    };
     fn(); window.addEventListener('scroll', fn, { passive: true });
     return () => window.removeEventListener('scroll', fn);
   }, []);
 
   return (
-    <header className={`fixed top-0 inset-x-0 z-50 transition-all duration-500`}
-      style={{ background: scrolled ? 'rgba(14,11,8,.60)' : 'rgba(14,11,8,.0)', borderBottom: scrolled ? '1px solid #2c2620' : '1px solid transparent', backdropFilter: scrolled ? 'blur(12px)' : 'none' }}>
+    <header className={`fixed top-0 inset-x-0 z-50 transition-all duration-300`}
+      style={{ background: scrolled ? 'rgba(14,11,8,.60)' : 'rgba(14,11,8,.0)', borderBottom: scrolled ? '1px solid #2c2620' : '1px solid transparent', backdropFilter: scrolled ? 'blur(12px)' : 'none', transform: hidden ? 'translateY(-110%)' : 'translateY(0)' }}>
 
       {/* Desktop nav */}
       <div className="hidden md:grid max-w-7xl mx-auto px-8 h-20" style={{ gridTemplateColumns: '1fr auto 1fr' }}>
