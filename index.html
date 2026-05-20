@@ -395,25 +395,16 @@ function MenuSection() {
 
 // ---------- Gallery ----------
 const GALLERY = [
-  { src: 'restaurant.jpg',         label: 'Restaurant',   col: 'md:col-span-2 md:row-span-2' },
-  { src: 'restaurant_elegant.jpg', label: 'Interior elegant' },
-  { src: 'terrace_logo.jpg',       label: 'Intrare' },
-  { src: 'restaurant2.jpg',        label: 'Sală' },
-  { src: 'restaurant3.jpg',        label: 'Atmosferă' },
-  { src: 'restaurant4.jpg',        label: 'Detalii' },
-  { src: 'terrace.jpg',            label: 'Terasă',        col: 'md:col-span-2' },
-  { src: 'terrace2.jpg',           label: 'Terasă de vară' },
-  { src: 'restaurant5.jpg',        label: 'Seară' },
-  { src: 'restaurant6.jpg',        label: 'Lounge',        col: 'md:col-span-2' },
-  { src: 'food.jpg',               label: 'Preparate' },
-  { src: 'cocktail1.jpg',          label: 'Cocktailuri' },
-  { src: 'dessert.jpg',            label: 'Deserturi' },
+  { src: 'restaurant.jpg',  label: 'Restaurant',  col: 'col-span-2' },
+  { src: 'terrace.jpg',     label: 'Terasă',      col: '' },
+  { src: 'food.jpg',        label: 'Preparate',   col: '' },
+  { src: 'cocktail1.jpg',   label: 'Cocktailuri', col: 'col-span-2' },
 ];
 function GalleryItem({ g }) {
   return (
-    <figure className={`relative overflow-hidden rounded-xl group ${g.col || ''}`}>
+    <figure className={`relative overflow-hidden rounded-sm group ${g.col || ''}`}>
       <img src={g.src} alt={g.label} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
-      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/35 transition-all duration-500" />
+      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-500" />
       <figcaption className="absolute bottom-0 left-0 right-0 p-4 text-white text-[11px] tracking-[0.2em] uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-300"
         style={{ background: 'linear-gradient(to top, rgba(0,0,0,.65), transparent)' }}>{g.label}</figcaption>
     </figure>
@@ -428,7 +419,7 @@ function Gallery() {
           <h2 className="font-display text-4xl md:text-5xl" style={{ color: '#1a1612' }}>Momentele noastre</h2>
           <div className="mt-8 h-px w-16 mx-auto" style={{ background: 'var(--accent)' }} />
         </div>
-        <div className="reveal grid grid-cols-2 md:grid-cols-3 auto-rows-[280px] md:auto-rows-[320px] gap-3">
+        <div className="reveal grid grid-cols-3 auto-rows-[240px] md:auto-rows-[360px] gap-2">
           {GALLERY.map((g, i) => <GalleryItem key={i} g={g} />)}
         </div>
       </div>
