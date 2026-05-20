@@ -369,10 +369,10 @@ function MenuSection() {
           <p className="mt-4 text-[15px] max-w-md mx-auto" style={{ color: 'var(--muted)' }}>Mic dejun, gustări, salate, sushi, pizza, paste, pește, carne și deserturi — totul sub un singur acoperiș.</p>
           <div className="mt-8 h-px w-16 mx-auto" style={{ background: 'var(--accent)' }} />
         </div>
-        <div className="reveal grid grid-cols-3 md:flex md:flex-wrap md:justify-center gap-x-8 gap-y-3 mb-10">
+        <div className="reveal grid grid-cols-3 gap-x-3 gap-y-4 md:flex md:flex-wrap md:justify-center md:gap-x-8 md:gap-y-3 mb-10">
           {cats.map(c => (
             <button key={c} onClick={() => handleCatChange(c)}
-              className="relative pb-2 text-[11px] md:text-[12px] tracking-[0.2em] uppercase transition-colors text-center"
+              className="relative pb-2 text-[10px] md:text-[12px] tracking-[0.15em] uppercase transition-colors text-center leading-tight"
               style={{ color: active === c ? 'var(--accent)' : 'var(--muted)' }}>
               {c}
               <span className="absolute bottom-0 left-0 right-0 h-px transition-all duration-300"
