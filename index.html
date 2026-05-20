@@ -307,7 +307,7 @@ function Hero() {
       ))}
       <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,.35) 0%, rgba(0,0,0,.55) 60%, rgba(0,0,0,.7) 100%)' }} />
       <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-5">
-        <img src="logo_nobg.png" alt={BRAND.name} className="hero-anim-2 mb-3" style={{ height: 'clamp(30px, 5vw, 55px)', width: 'auto', objectFit: 'contain', filter: 'drop-shadow(0 4px 24px rgba(0,0,0,0.5))' }} />
+        <img src="logo_nobg.png" alt={BRAND.name} className="hero-anim-2 mb-3" style={{ height: 'clamp(80px, 15vw, 150px)', width: 'auto', objectFit: 'contain', filter: 'drop-shadow(0 4px 24px rgba(0,0,0,0.5))' }} />
         <p className="hero-anim text-[10px] sm:text-[11px] tracking-[0.45em] uppercase text-white/70 mb-8">Restaurant · Bar · Café</p>
         <div className="hero-anim-3">
           <a href="#rezervare" className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full text-[13px] font-medium tracking-wide bg-white/15 backdrop-blur text-white border border-white/30 hover:bg-white/25 transition-colors">
@@ -646,7 +646,7 @@ function StarIcon({ filled }) {
 
 function ReviewCard({ review }) {
   return (
-    <div className="flex-none w-[300px] md:w-[340px] rounded-2xl p-6 flex flex-col gap-4 border" style={{ background: '#f5f0ea', borderColor: '#e0d8ce' }}>
+    <div className="w-full rounded-2xl p-6 flex flex-col gap-4 border" style={{ background: '#f5f0ea', borderColor: '#e0d8ce' }}>
       <div className="flex items-start gap-3">
         <div className="w-10 h-10 rounded-full flex items-center justify-center flex-none text-[13px] font-semibold text-white" style={{ background: 'var(--accent)' }}>
           {review.avatar}
@@ -700,7 +700,7 @@ function Reviews() {
   };
 
   return (
-    <section id="recenzii" className="py-16 md:py-32 md:px-8 overflow-hidden" style={{ background: '#ede8e0' }}>
+    <section id="recenzii" className="py-16 md:py-32 overflow-hidden" style={{ background: '#ede8e0' }}>
       <div className="max-w-5xl mx-auto">
         <div className="reveal text-center mb-14 px-5">
           <p className="text-[11px] tracking-[0.45em] uppercase mb-3" style={{ color: 'var(--accent)' }}>Google Reviews</p>
@@ -712,58 +712,49 @@ function Reviews() {
           </div>
           <div className="mt-8 h-px w-16 mx-auto" style={{ background: 'var(--accent)' }} />
         </div>
+      </div>
 
-        {/* Desktop: scrollable row */}
-        <div className="hidden md:flex gap-5 overflow-x-auto pb-4 snap-x snap-mandatory px-8" style={{ scrollbarWidth: 'none' }}>
+      {/* Centered peek carousel — card 52vw, gap 3vw, step 55vw */}
+      <div
+        className="relative"
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+      >
+        <div
+          className="flex transition-transform duration-500 ease-in-out"
+          style={{ gap: '3vw', transform: `translateX(calc(24vw - ${idx * 55}vw))` }}
+        >
           {REVIEWS.map((r, i) => (
-            <div key={i} className="snap-start flex-none">
+            <div
+              key={i}
+              className="flex-none transition-all duration-500"
+              style={{
+                width: '52vw',
+                opacity: i === idx ? 1 : 0.18,
+                transform: i === idx ? 'scale(1)' : 'scale(0.97)',
+                pointerEvents: i === idx ? 'auto' : 'none',
+              }}
+              onClick={() => { if (i !== idx) { goTo(i); resetAuto(); } }}
+            >
               <ReviewCard review={r} />
             </div>
           ))}
         </div>
 
-        {/* Mobile: peek carousel with swipe + auto-advance */}
-        <div
-          className="md:hidden relative"
-          onTouchStart={onTouchStart}
-          onTouchEnd={onTouchEnd}
-        >
-          <div
-            className="flex transition-transform duration-500 ease-in-out"
-            style={{ transform: `translateX(calc(-${idx * 82}vw + 9vw))` }}
-          >
-            {REVIEWS.map((r, i) => (
-              <div
-                key={i}
-                className="flex-none transition-all duration-500"
-                style={{
-                  width: '82vw',
-                  marginRight: '3vw',
-                  opacity: i === idx ? 1 : 0.45,
-                  transform: i === idx ? 'scale(1)' : 'scale(0.96)',
-                }}
-                onClick={() => { if (i !== idx) { goTo(i); resetAuto(); } }}
-              >
-                <ReviewCard review={r} />
-              </div>
-            ))}
-          </div>
-
-          {/* Dots */}
-          <div className="flex justify-center gap-1.5 mt-6">
-            {REVIEWS.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => { goTo(i); resetAuto(); }}
-                className="transition-all duration-300 rounded-full"
-                style={{
-                  width: i === idx ? 20 : 6,
-                  height: 6,
-                  background: i === idx ? 'var(--accent)' : '#c4b8ac',
-                }}
-              />
-            ))}
-          </div>
+        {/* Dots */}
+        <div className="flex justify-center gap-1.5 mt-6">
+          {REVIEWS.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => { goTo(i); resetAuto(); }}
+              className="transition-all duration-300 rounded-full"
+              style={{
+                width: i === idx ? 20 : 6,
+                height: 6,
+                background: i === idx ? 'var(--accent)' : '#c4b8ac',
+              }}
+            />
+          ))}
         </div>
       </div>
     </section>
