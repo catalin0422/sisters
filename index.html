@@ -260,7 +260,7 @@ function Nav() {
 
   return (
     <header className={`fixed top-0 inset-x-0 z-50 transition-all duration-300`}
-      style={{ background: scrolled ? 'rgba(14,11,8,.60)' : 'rgba(14,11,8,.0)', borderBottom: scrolled ? '1px solid #2c2620' : '1px solid transparent', backdropFilter: scrolled ? 'blur(12px)' : 'none', transform: hidden ? 'translateY(-110%)' : 'translateY(0)' }}>
+      style={{ background: (scrolled || open) ? 'rgba(14,11,8,.60)' : 'rgba(14,11,8,.0)', borderBottom: (scrolled || open) ? '1px solid #2c2620' : '1px solid transparent', backdropFilter: (scrolled || open) ? 'blur(12px)' : 'none', transform: hidden ? 'translateY(-110%)' : 'translateY(0)' }}>
 
       {/* Desktop nav */}
       <div className="hidden md:grid max-w-7xl mx-auto px-8 h-20" style={{ gridTemplateColumns: '1fr auto 1fr' }}>
