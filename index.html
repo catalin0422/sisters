@@ -279,7 +279,7 @@ function Nav() {
           {open ? <XIcon size={22} /> : <MenuIcon size={22} />}
         </button>
       </div>
-      <div className={`md:hidden overflow-hidden transition-all duration-300 border-t ${open ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`} style={{ background: 'rgba(14,11,8,.98)', borderColor: 'var(--border)' }}>
+      <div className={`md:hidden overflow-hidden transition-all duration-300 border-t ${open ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`} style={{ background: 'rgba(14,11,8,.60)', backdropFilter: 'blur(12px)', borderColor: 'var(--border)' }}>
         <div className="px-5 py-4 flex flex-col gap-1">
           {NAV_LINKS.map(l => (
             <a key={l.id} href={`#${l.id}`} onClick={() => setOpen(false)} className="py-3 text-[13px] tracking-[0.15em] uppercase border-b last:border-0" style={{ color: 'var(--text)', borderColor: 'var(--border)' }}>{l.label}</a>
@@ -307,7 +307,7 @@ function Hero() {
       ))}
       <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,.35) 0%, rgba(0,0,0,.55) 60%, rgba(0,0,0,.7) 100%)' }} />
       <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-5">
-        <img src="logo_nobg.png" alt={BRAND.name} className="hero-anim-2 mb-3" style={{ height: 'clamp(60px, 11vw, 110px)', width: 'auto', objectFit: 'contain', filter: 'drop-shadow(0 4px 24px rgba(0,0,0,0.5))' }} />
+        <img src="logo_nobg.png" alt={BRAND.name} className="hero-anim-2 mb-3" style={{ height: 'clamp(48px, 9vw, 90px)', width: 'auto', objectFit: 'contain', filter: 'drop-shadow(0 4px 24px rgba(0,0,0,0.5))' }} />
         <p className="hero-anim text-[10px] sm:text-[11px] tracking-[0.45em] uppercase text-white/70 mb-8">Restaurant · Bar · Café</p>
         <div className="hero-anim-3">
           <a href="#rezervare" className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full text-[13px] font-medium tracking-wide bg-white/15 backdrop-blur text-white border border-white/30 hover:bg-white/25 transition-colors">
