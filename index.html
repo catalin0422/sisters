@@ -714,24 +714,24 @@ function Reviews() {
         </div>
       </div>
 
-      {/* Centered peek carousel — card 52vw, gap 3vw, step 55vw */}
+      {/* Centered peek carousel — card 68vw, gap 3vw, step 71vw */}
       <div
         className="relative"
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
         <div
-          className="flex transition-transform duration-500 ease-in-out"
-          style={{ gap: '3vw', transform: `translateX(calc(24vw - ${idx * 55}vw))` }}
+          className="flex items-start transition-transform duration-500 ease-in-out"
+          style={{ gap: '3vw', transform: `translateX(calc(16vw - ${idx * 71}vw))` }}
         >
           {REVIEWS.map((r, i) => (
             <div
               key={i}
               className="flex-none transition-all duration-500"
               style={{
-                width: '52vw',
-                opacity: i === idx ? 1 : 0.18,
-                transform: i === idx ? 'scale(1)' : 'scale(0.97)',
+                width: '68vw',
+                opacity: i === idx ? 1 : 0.2,
+                transform: i === idx ? 'scale(1) translateY(0px)' : 'scale(0.95) translateY(28px)',
                 pointerEvents: i === idx ? 'auto' : 'none',
               }}
               onClick={() => { if (i !== idx) { goTo(i); resetAuto(); } }}
