@@ -307,7 +307,7 @@ function Nav() {
 // ---------- Hero ----------
 function Hero() {
   const [slide, setSlide] = React.useState(0);
-  const slides = [PHOTOS.hero3, PHOTOS.hero2, PHOTOS.hero1];
+  const slides = [PHOTOS.hero3, PHOTOS.hero2, 'restaurant2.jpg'];
   React.useEffect(() => {
     const t = setInterval(() => setSlide(s => (s + 1) % slides.length), 4500);
     return () => clearInterval(t);
