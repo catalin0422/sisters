@@ -344,16 +344,12 @@ function MenuCard({ item }) {
 }
 
 // ---------- Menu Section ----------
-const PREVIEW = 6;
 function MenuSection() {
   const cats = Object.keys(MENU);
   const [active, setActive] = React.useState(cats[0]);
-  const [expanded, setExpanded] = React.useState(false);
 
-  const handleCatChange = (c) => { setActive(c); setExpanded(false); };
+  const handleCatChange = (c) => { setActive(c); };
   const items = MENU[active];
-  const visible = expanded ? items : items.slice(0, PREVIEW);
-  const hasMore = items.length > PREVIEW;
 
   return (
     <section id="meniu" className="py-16 md:py-32 px-5 md:px-8" style={{ background: 'var(--bg)' }}>
@@ -376,19 +372,10 @@ function MenuSection() {
           ))}
         </div>
         <div className="reveal grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {visible.map(item => (
+          {items.map(item => (
             <MenuCard key={item.name} item={item} />
           ))}
         </div>
-        {hasMore && (
-          <div className="text-center mt-8">
-            <button onClick={() => setExpanded(e => !e)}
-              className="px-8 py-3 rounded-full text-[13px] font-medium tracking-wide transition-all border"
-              style={{ borderColor: 'var(--accent)', color: 'var(--accent)' }}>
-              {expanded ? `Arată mai puțin ↑` : `Vezi toate preparatele (${items.length - PREVIEW} mai multe) ↓`}
-            </button>
-          </div>
-        )}
         <p className="reveal text-center mt-8 text-[12px] tracking-[0.25em] uppercase" style={{ color: 'var(--muted)' }}>
           Prețurile includ TVA · Informații alergeni disponibile la cerere
         </p>
