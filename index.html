@@ -2,9 +2,9 @@
 <html lang="ro">
 <head>
 <meta charset="utf-8" />
-<link rel="icon" type="image/png" href="logo.jpg" />
+<link rel="icon" type="image/png" href="logo_nobg.png" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Sisters — Restaurant & Café</title>
+<title>Embers — Restaurant & Café</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
@@ -62,28 +62,23 @@ const db = createClient(
 );
 
 const BRAND = {
-  name: 'Sisters',
+  name: 'Embers',
   tagline: 'Restaurant & Café',
-  phone: '+373 792 72 000',
-  emailReservations: 'sisters@gmail.com',
-  emailContact: 'sisters@gmail.com',
-  addressLine1: 'Mihai Eminescu 50',
-  addressLine2: 'MD-2012, Chișinău, Moldova',
+  phone: '+373 XXX XXX XXX',
+  emailReservations: 'contact@embers.md',
+  emailContact: 'contact@embers.md',
+  addressLine1: '[Adresa restaurantului]',
+  addressLine2: 'Chișinău, Moldova',
   year: 2026,
   credit: 'Realizat de Dogaru Catalin · +373 60 171 888',
 };
 
 const PHOTOS = {
-  hero1: 'restaurant.jpg',
-  hero2: 'terrace.jpg',
-  hero3: 'restaurant_elegant.jpg',
-  g1: 'food.jpg',
-  g2: 'cocktail1.jpg',
-  g3: 'restaurant2.jpg',
-  g4: 'restaurant3.jpg',
-  g5: 'terrace.jpg',
-  g6: 'terrace2.jpg',
-  about: 'team.jpg',
+  hero1: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1600&q=85&auto=format&fit=crop',
+  hero2: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1600&q=85&auto=format&fit=crop',
+  hero3: 'https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?w=1600&q=85&auto=format&fit=crop',
+  about: 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=800&q=80&auto=format&fit=crop',
+  chef:  'https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?w=800&q=80&auto=format&fit=crop',
 };
 
 const MENU = {
@@ -156,7 +151,7 @@ const MENU = {
     { name: 'Gunkan cu icre negre (2 buc)', desc: '', price: 340, img: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&q=80&auto=format&fit=crop' },
     { name: 'Gunkan cu țipar (2 buc)', desc: '', price: 160, img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=500&q=80&auto=format&fit=crop' },
     { name: 'Gunkan cu scoici (2 buc)', desc: '', price: 180, img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=500&q=80&auto=format&fit=crop' },
-    { name: 'Sisters', desc: '', price: 400, img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=500&q=80&auto=format&fit=crop' },
+    { name: 'Embers Roll', desc: '', price: 400, img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=500&q=80&auto=format&fit=crop' },
     { name: 'Philadelphia', desc: '', price: 300, img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=500&q=80&auto=format&fit=crop' },
     { name: 'Philadelphia Delux', desc: '', price: 340, img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=500&q=80&auto=format&fit=crop' },
     { name: 'California cu somon / creveți / țipar / ton', desc: '', price: 270, img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=500&q=80&auto=format&fit=crop' },
@@ -307,7 +302,7 @@ function Nav() {
 // ---------- Hero ----------
 function Hero() {
   const [slide, setSlide] = React.useState(0);
-  const slides = [PHOTOS.hero3, PHOTOS.hero2, 'restaurant2.jpg'];
+  const slides = [PHOTOS.hero3, PHOTOS.hero2, PHOTOS.hero1];
   React.useEffect(() => {
     const t = setInterval(() => setSlide(s => (s + 1) % slides.length), 4500);
     return () => clearInterval(t);
@@ -320,7 +315,7 @@ function Hero() {
       ))}
       <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,.35) 0%, rgba(0,0,0,.55) 60%, rgba(0,0,0,.7) 100%)' }} />
       <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-5">
-        <img src="logo_nobg.png" alt={BRAND.name} className="hero-anim-2 mb-3" style={{ height: 'clamp(48px, 9vw, 90px)', width: 'auto', objectFit: 'contain', filter: 'drop-shadow(0 4px 24px rgba(0,0,0,0.5))' }} />
+        <h1 className="hero-anim-2 font-cormorant text-white uppercase tracking-[0.35em] leading-none mb-3" style={{ fontSize: 'clamp(48px, 10vw, 110px)', textShadow: '0 4px 24px rgba(0,0,0,0.5)' }}>{BRAND.name}</h1>
         <p className="hero-anim text-[10px] sm:text-[11px] tracking-[0.45em] uppercase text-white/70 mb-8">Restaurant · Bar · Café</p>
         <div className="hero-anim-3">
           <a href="#rezervare" className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full text-[13px] font-medium tracking-wide bg-white/15 backdrop-blur text-white border border-white/30 hover:bg-white/25 transition-colors">
@@ -395,10 +390,10 @@ function MenuSection() {
 
 // ---------- Gallery ----------
 const GALLERY = [
-  { src: 'restaurant.jpg',  label: 'Restaurant',  col: 'col-span-2' },
-  { src: 'terrace.jpg',     label: 'Terasă',      col: '' },
-  { src: 'food.jpg',        label: 'Preparate',   col: '' },
-  { src: 'cocktail1.jpg',   label: 'Cocktailuri', col: 'col-span-2' },
+  { src: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=900&q=80&auto=format&fit=crop', label: 'Restaurant',  col: 'col-span-2' },
+  { src: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80&auto=format&fit=crop', label: 'Terasă',      col: '' },
+  { src: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600&q=80&auto=format&fit=crop', label: 'Preparate',   col: '' },
+  { src: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=900&q=80&auto=format&fit=crop', label: 'Cocktailuri', col: 'col-span-2' },
 ];
 function GalleryItem({ g }) {
   return (
@@ -433,17 +428,17 @@ function Chefs() {
     <section id="bucatari" className="py-16 md:py-32 px-5 md:px-8" style={{ background: 'var(--warm)' }}>
       <div className="max-w-5xl mx-auto grid lg:grid-cols-2 gap-10 lg:gap-20 items-center">
         <div className="reveal relative">
-          <img src="chef_pizza.jpg" alt="Bucătarii Sisters" className="w-full aspect-[4/5] object-cover rounded-2xl" />
+          <img src={PHOTOS.chef} alt="Bucătarii noștri" className="w-full aspect-[4/5] object-cover rounded-2xl" />
           <div className="hidden sm:block absolute -bottom-6 -left-4 md:-left-8 rounded-xl p-5 shadow-lg max-w-[200px]" style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
             <p className="font-display italic text-lg leading-snug" style={{ color: 'var(--text)' }}>„Gătim cu pasiune, servim cu suflet."</p>
-            <p className="mt-2 text-[11px] tracking-wide uppercase" style={{ color: 'var(--muted)' }}>— Echipa Sisters</p>
+            <p className="mt-2 text-[11px] tracking-wide uppercase" style={{ color: 'var(--muted)' }}>— Echipa {BRAND.name}</p>
           </div>
         </div>
         <div className="reveal">
           <p className="text-[11px] tracking-[0.45em] uppercase mb-3" style={{ color: 'var(--accent)' }}>Bucătarii noștri</p>
           <h2 className="font-display text-4xl md:text-5xl leading-tight" style={{ color: 'var(--text)' }}>Artă pe farfurie,<br /><em>în fiecare zi.</em></h2>
           <div className="mt-8 space-y-4 text-[15px] leading-relaxed" style={{ color: 'var(--muted)' }}>
-            <p>La Sisters, bucătăria este condusă de o echipă de bucătari cu experiență bogată. Fiecare preparat este rezultatul unei combinații între tehnici clasice și ingrediente atent selecționate de la producători locali.</p>
+            <p>Bucătăria noastră este condusă de o echipă de bucătari cu experiență bogată. Fiecare preparat este rezultatul unei combinații între tehnici clasice și ingrediente atent selecționate de la producători locali.</p>
             <p>Pasiunea lor pentru detaliu se reflectă în fiecare farfurie — de la sushi-ul pregătit cu precizie japoneză, până la pastele artizanale și grătarele savuroase. Meniul se reinventează sezonier, urmând ritmul naturii și inspirația momentului.</p>
             <p>Filosofia echipei noastre este simplă: materia primă de calitate, respect față de rețete tradiționale și curajul de a inova. Rezultatul îl descoperiți la fiecare masă.</p>
           </div>
@@ -547,11 +542,11 @@ function About() {
           <p className="text-[11px] tracking-[0.45em] uppercase mb-3" style={{ color: 'var(--accent)' }}>Povestea noastră</p>
           <h2 className="font-display text-4xl md:text-5xl leading-tight" style={{ color: '#1a1612' }}>Pasiunea pentru<br /><em>mâncare autentică.</em></h2>
           <div className="mt-8 space-y-4 text-[15px] leading-relaxed" style={{ color: '#4a3e35' }}>
-            <p>Sisters este locul unde atmosfera caldă se îmbină cu bucătăria variată — de la mic dejun și salate proaspete, până la preparate la grătar și cocktailuri de autor.</p>
+            <p>Embers este locul unde atmosfera caldă se îmbină cu bucătăria variată — de la mic dejun și salate proaspete, până la preparate la grătar și cocktailuri de autor.</p>
             <p>Restaurantul nostru oferă o experiență completă: terasă primitoare, interior elegant și un meniu care satisface orice poftă.</p>
           </div>
           <div className="mt-10 grid grid-cols-3 gap-6">
-            {[{ n: 'Sisters', l: 'Restaurant' }, { n: '2008', l: 'Fondat în' }, { n: '6+', l: 'Categorii meniu' }].map(s => (
+            {[{ n: 'Embers', l: 'Restaurant' }, { n: '2008', l: 'Fondat în' }, { n: '6+', l: 'Categorii meniu' }].map(s => (
               <div key={s.n}>
                 <div className="font-display text-3xl font-medium" style={{ color: 'var(--accent)' }}>{s.n}</div>
                 <div className="text-[11px] tracking-[0.25em] uppercase mt-1" style={{ color: '#6b5f54' }}>{s.l}</div>
@@ -567,76 +562,76 @@ function About() {
 // ---------- Reviews ----------
 const REVIEWS = [
   {
-    name: 'Michael Lambert',
-    avatar: 'ML',
+    name: 'Thomas Renaud',
+    avatar: 'TR',
     badge: 'Local Guide · 269 recenzii',
     rating: 5,
     date: 'acum 6 luni',
     text: 'It\'s the place to be — and to be seen. The kind of setting where time slows down, where every cocktail feels like a scene from The White Lotus, and where luxury whispers rather than shouts. Most tourists chase comfort; this place offers character — a rare blend of elegance, flirtation, and sunlit decadence.\n\nThe cocktails are unforgettable, the food delightful, but it\'s the view and the energy that make it addictive. On the veranda, life drifts by in golden tones — laughter, linen, and a touch of mischief in the air.',
   },
   {
-    name: 'Geta Matei',
-    avatar: 'GM',
+    name: 'Sofia Marin',
+    avatar: 'SM',
     badge: 'Local Guide · 119 recenzii',
     rating: 5,
     date: 'acum 7 luni',
     text: 'Paharul se ridică încet, iar lumina caldă a restaurantului se joacă pe marginea cristalului. Aromele se deschid cu eleganță – o invitație subtilă la răbdare și atenție. Înghițitura e fină, catifelată, parcă îmbracă timpul într-o haină nobilă.\n\nNu e doar o degustare, e o clipă de noblețe în care simțurile se lasă răsfățate. Mâncarea fină se îmbină perfect cu vinul servit a la carte.',
   },
   {
-    name: 'Lalla Lalla',
-    avatar: 'LL',
+    name: 'Laura Ionescu',
+    avatar: 'LI',
     badge: 'Local Guide · 32 recenzii',
     rating: 5,
     date: 'acum 8 luni',
     text: 'I was a bit skeptical before getting there but everything from the moment we stepped in was very good. A very elegant place and the food was excellent! And an excellent customer service — chapeau for that!',
   },
   {
-    name: 'Jakob Mediaensky',
-    avatar: 'JM',
+    name: 'Jakob Brenner',
+    avatar: 'JB',
     badge: 'Local Guide · 55 recenzii',
     rating: 5,
     date: 'acum 9 luni',
     text: 'One of the best spots in Chișinău. We came several days in a row — early lunches, late lunches — and everything was top. Excellent food, great Moldovan wine, and a truly high-level kitchen. Chișinău with taste — just come here.',
   },
   {
-    name: 'George D',
-    avatar: 'GD',
+    name: 'Andrei Florescu',
+    avatar: 'AF',
     badge: 'Local Guide · 64 recenzii',
     rating: 5,
     date: 'acum un an',
-    text: 'O surpriză plăcută la restaurantul Sisters! Am fost încântat de meniul variat și de calitatea preparatelor. Clătitele cu somon și icre roșii au fost absolut delicioase, cu un plating deosebit care îți deschide apetitul. Desertul „Cușma lui Guguță" l-am încercat pentru prima dată și a devenit rapid preferatul meu din Moldova. O experiență culinară autentică pe care o recomand cu drag!',
+    text: 'O surpriză plăcută! Am fost încântat de meniul variat și de calitatea preparatelor. Clătitele cu somon și icre roșii au fost absolut delicioase, cu un plating deosebit care îți deschide apetitul. O experiență culinară autentică pe care o recomand cu drag!',
   },
   {
-    name: 'Alexandra Bita',
-    avatar: 'AB',
+    name: 'Alexandra Popa',
+    avatar: 'AP',
     badge: 'Local Guide · 48 recenzii',
     rating: 5,
     date: 'acum un an',
-    text: 'The service was fast and the food was very good. We came here for dinner, and we tried the gyozas with shrimps, which were very good, a Greek salad, and the highlight of the night, the steak. It was a bit expensive but it was one of the best steaks we had. The meat was cooked perfectly, and it was very tender and tasty. The portion was very big, so we shared the steak.\n\nThe desserts were also very good. Totally recommend!',
+    text: 'The service was fast and the food was very good. We came here for dinner, and we tried the gyozas with shrimps, which were very good, a Greek salad, and the highlight of the night, the steak. It was a bit expensive but it was one of the best steaks we had. The meat was cooked perfectly, and it was very tender and tasty.\n\nThe desserts were also very good. Totally recommend!',
   },
   {
-    name: 'EASY MOVING',
-    avatar: 'EM',
+    name: 'Marco Villani',
+    avatar: 'MV',
     badge: 'Local Guide · 264 recenzii',
     rating: 5,
     date: 'acum 6 luni',
-    text: 'Many thanks. Great format lounge/restaurant and hookah. Careful staff. Perfect food and service.',
+    text: 'Many thanks. Great format lounge/restaurant. Careful staff. Perfect food and service.',
   },
   {
-    name: 'Franck Libert',
+    name: 'Franck Lebrun',
     avatar: 'FL',
     badge: 'Local Guide · 56 recenzii',
     rating: 5,
     date: 'acum 5 luni',
-    text: 'Thanks to Daniel for judicious advices and his strong knowledge of all what is in the menu. Very good meal, wines from the region and chocolate cake at the end that was the best ever since so many years.\n\nSisters is not for everyone. But this blissful moment is also priceless. I\'ll be back!\n\nDecember 11th, 2025 — As usual, Sisters restaurant offers us a wonderful evening with high-quality food and wine. A very, very good restaurant not to be missed if you are a lover of good food in Chisinau. A warm welcome, impeccable service, a pleasure from start to finish.',
+    text: 'Thanks to the staff for their knowledge of the menu. Very good meal, wines from the region and chocolate cake at the end that was the best ever since so many years.\n\nThis place is not for everyone. But this blissful moment is also priceless. I\'ll be back!\n\nA warm welcome, impeccable service, a pleasure from start to finish. A very, very good restaurant not to be missed if you are a lover of good food in Chisinau.',
   },
   {
-    name: 'Roman Furtuna',
-    avatar: 'RF',
+    name: 'Elena Petrescu',
+    avatar: 'EP',
     badge: 'Local Guide · 32 recenzii',
     rating: 5,
     date: 'acum un an',
-    text: 'Sisters Restaurant in Chișinău is a true culinary gem that offers an unforgettable dining experience. From the moment you step inside, you are greeted with a warm and inviting ambiance that sets the tone for the evening. The impeccable service is only matched by the exquisite cuisine, which showcases a perfect blend of traditional and contemporary flavors.\n\nThe menu is thoughtfully crafted, offering a diverse selection of dishes that cater to a variety of palates. Each dish is a masterpiece, presented with artistic flair and prepared using the finest ingredients.\n\nSisters Restaurant is more than just a place to eat; it\'s a destination where fine dining is elevated to an art form. Highly recommended for anyone seeking a memorable dining adventure in Chișinău.',
+    text: 'A true culinary gem that offers an unforgettable dining experience. From the moment you step inside, you are greeted with a warm and inviting ambiance that sets the tone for the evening. The impeccable service is only matched by the exquisite cuisine, which showcases a perfect blend of traditional and contemporary flavors.\n\nThe menu is thoughtfully crafted, offering a diverse selection of dishes that cater to a variety of palates. Each dish is a masterpiece, presented with artistic flair and prepared using the finest ingredients.\n\nMore than just a place to eat — a destination where fine dining is elevated to an art form.',
   },
 ];
 
@@ -822,7 +817,7 @@ function Footer() {
   return (
     <footer className="border-t py-8 px-5 md:px-8" style={{ borderColor: 'var(--border)', background: 'var(--cream)' }}>
       <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-        <img src="logo.jpg" alt={BRAND.name} className="h-12 w-auto object-contain" />
+        <span className="font-cormorant text-2xl tracking-[0.25em] uppercase" style={{ color: 'var(--accent)' }}>{BRAND.name}</span>
         <div className="text-center">
           <p className="text-[11px] tracking-[0.2em] uppercase" style={{ color: 'var(--muted)' }}>© {BRAND.year} {BRAND.name}</p>
           <p className="text-[10px] mt-1" style={{ color: 'var(--muted)' }}>Realizat de Dogaru Catalin · +373 60 171 888</p>
